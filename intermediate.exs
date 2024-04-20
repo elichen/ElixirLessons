@@ -1,15 +1,28 @@
 defmodule Intermediate do
   # Exercise 1: Recursion
   # Implement a function `factorial(n)` that calculates the factorial of `n` using recursion.
-  def exercise1(n) do
-    # Your implementation here
+  def exercise1() do
+    factorial = fn
+      0, _rec -> 1
+      n, rec -> n * rec.(n-1, rec)
+    end
+    IO.puts factorial.(5, factorial)
   end
 
   # Exercise 2: Processes and Message Passing
   # Create two processes: a sender and a receiver. The sender should send a message to the receiver, 
   # and the receiver should print the message. Use spawn and send.
   def exercise2 do
-    # Your implementation here
+    receiver = fn ->
+      receive do
+        msg -> IO.puts "Received message: #{msg}"
+      end
+    end
+    receiver_pid = spawn(receiver)
+    sender = fn ->
+      send(receiver_pid, "Hello from sender!")
+    end
+    spawn(sender)
   end
 
   # Exercise 3: Enum and Stream
