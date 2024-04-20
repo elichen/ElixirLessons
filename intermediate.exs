@@ -29,7 +29,8 @@ defmodule Intermediate do
   # Use the `Enum` module to filter even numbers from a list, square them, and then sum them up.
   # After that, try using `Stream` to lazily process a range of numbers in the same way.
   def exercise3 do
-    # Your implementation here
+    1..10 |> Enum.filter(fn x -> rem(x,2) == 0 end) |> Enum.sum |> IO.puts
+    1..10 |> Stream.filter(&rem(&1,2) == 0) |> Enum.sum |> IO.puts
   end
 
   # Exercise 4: Comprehensions
