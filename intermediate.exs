@@ -1,3 +1,25 @@
+defmodule MyGenServer do
+  use GenServer
+
+  def init(_initial_state) do
+    {:ok, %{count: 0}}
+  end
+
+  def handle_call(:current_counter, _from, state) do
+    {:reply, state.count, state}
+  end
+
+  def handle_cast(:increment_counter, state) do
+    new_state = Map.update!(state, :count, &(&1+1))
+    {:noreply, new_state}
+  end
+
+  def handle_cast(:reset_counter, state) do
+    new_state = Map.put(state, :count, 0)
+    {:noreply, new_state}
+  end
+end
+
 defmodule Intermediate do
   # Exercise 1: Recursion
   # Implement a function `factorial(n)` that calculates the factorial of `n` using recursion.
@@ -37,14 +59,26 @@ defmodule Intermediate do
   # Write a list comprehension that takes a list of strings, converts each string to uppercase, 
   # and returns a new list with the modified strings.
   def exercise4 do
-    # Your implementation here
+    foo = fn l ->
+      for s <- l, do: String.upcase(s)
+    end
+    fruits = ["apple", "banana", "cherry", "date", "elderberry"]
+    IO.inspect foo.(fruits)
   end
 
   # Exercise 5: OTP and GenServer
   # Implement a simple GenServer that maintains a counter. It should support incrementing the counter,
   # resetting it, and retrieving the current value.
   def exercise5 do
-    # Your implementation here
+    GenServer.start_link(MyGenServer, %{}, name: MyGenServer)
+    s1 = GenServer.call(MyGenServer, :current_counter)
+    GenServer.cast(MyGenServer, :increment_counter)
+    GenServer.cast(MyGenServer, :increment_counter)
+    GenServer.cast(MyGenServer, :increment_counter)
+    s2 = GenServer.call(MyGenServer, :current_counter)
+    GenServer.cast(MyGenServer, :reset_counter)
+    s3 = GenServer.call(MyGenServer, :current_counter)
+    IO.puts "s1:#{s1} s2: #{s2} s3: #{s3}"
   end
 
   # Exercise 6: Supervisors and Application Structure
